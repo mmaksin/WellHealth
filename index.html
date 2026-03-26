@@ -26,17 +26,14 @@
             <h1>Rehabilitation Match Assistant</h1>
           </div>
         </div>
-        <div class="topbar-actions">
-          <button class="help-button" aria-label="Help">?</button>
-        </div>
       </header>
 
       <main class="workspace-grid">
         <section class="panel panel-input">
           <div class="panel-header">
             <div>
-              <p class="eyebrow">Patient Input</p>
-              <h2>Patient Input</h2>
+              <p class="eyebrow">Patient Info</p>
+              <h2>Patient Info</h2>
             </div>
             <p class="panel-subtext">Paste, upload, or dictate a discharge summary</p>
           </div>
@@ -50,50 +47,53 @@
             ></textarea>
 
             <div class="control-row">
-              <button class="secondary-button" type="button" id="upload-button">Upload PDF</button>
-              <button class="secondary-button icon-button" type="button" id="dictation-button">
+              <button class="secondary-button action-button" type="button" id="upload-button">📋  Upload PDF</button>
+              <button class="secondary-button action-button icon-button" type="button" id="dictation-button">
                 <span class="mic-dot"></span>
-                Dictation
+                Dictate
+              </button>
+              <button
+                class="secondary-button action-button"
+                type="button"
+                id="ehr-button"
+                disabled
+                aria-disabled="true"
+              >
+                Load from EHR (coming soon)
               </button>
             </div>
 
-            <p class="helper-copy">Paste discharge summary or connect EHR (coming soon)</p>
           </div>
 
           <div class="field-group">
-            <div class="field-group-header">
-              <h3>Structured Fields</h3>
-              <span id="field-status" class="field-status">Awaiting parsing</span>
-            </div>
-
             <div class="field-grid">
               <label class="field">
                 <span>Diagnosis</span>
-                <input id="field-diagnosis" type="text" />
+                <textarea id="field-diagnosis" class="field-textarea" rows="2"></textarea>
               </label>
               <label class="field">
                 <span>Severity / Functional status</span>
-                <input id="field-severity" type="text" />
+                <textarea id="field-severity" class="field-textarea" rows="2"></textarea>
               </label>
               <label class="field">
                 <span>Contraindications</span>
-                <input id="field-contraindications" type="text" />
+                <textarea id="field-contraindications" class="field-textarea" rows="2"></textarea>
               </label>
               <label class="field">
                 <span>Comorbidities</span>
-                <input id="field-comorbidities" type="text" />
+                <textarea id="field-comorbidities" class="field-textarea" rows="2"></textarea>
               </label>
               <label class="field">
                 <span>Mobility level</span>
-                <input id="field-mobility" type="text" />
+                <textarea id="field-mobility" class="field-textarea" rows="2"></textarea>
               </label>
               <label class="field">
                 <span>Budget (optional)</span>
-                <input id="field-budget" type="text" />
+                <textarea id="field-budget" class="field-textarea" rows="2"></textarea>
               </label>
               <label class="field">
                 <span>Geography (optional)</span>
-                <input id="field-geography" type="text" />
+                <textarea id="field-geography" class="field-textarea" rows="2"></textarea>
               </label>
             </div>
           </div>
@@ -111,7 +111,7 @@
         <section class="panel panel-center">
           <div class="panel-header">
             <div>
-              <p class="eyebrow">Reasoning</p>
+              <p class="eyebrow">Analysis</p>
               <h2>Recommendation</h2>
             </div>
             <p class="panel-subtext">
@@ -232,6 +232,8 @@
           </div>
         </div>
       </aside>
+
+      <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
     </div>
 
     <script src="./app.js"></script>

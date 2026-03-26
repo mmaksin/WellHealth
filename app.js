@@ -250,7 +250,6 @@ const fields = {
 };
 
 const summaryInput = document.getElementById("summary-input");
-const fieldStatus = document.getElementById("field-status");
 const generateButton = document.getElementById("generate-button");
 const dictationButton = document.getElementById("dictation-button");
 const fallbackBanner = document.getElementById("fallback-banner");
@@ -264,6 +263,7 @@ const assistantToggle = document.getElementById("assistant-toggle");
 const assistantMessages = document.getElementById("assistant-messages");
 const assistantStatus = document.getElementById("assistant-status");
 const assistantInput = document.getElementById("assistant-input");
+const toastRegion = document.getElementById("toast-region");
 
 const selectedName = document.getElementById("selected-name");
 const selectedBadge = document.getElementById("selected-badge");
@@ -275,6 +275,7 @@ const reasonPros = document.getElementById("reason-pros");
 const reasonCons = document.getElementById("reason-cons");
 const reasonWarnings = document.getElementById("reason-warnings");
 const warningBox = document.getElementById("warning-box");
+let editToastTimer = 0;
 
 function getScenario() {
   return scenarios[state.activeScenario];
@@ -282,6 +283,39 @@ function getScenario() {
 
 function cloneFields(source) {
   return JSON.parse(JSON.stringify(source));
+}
+
+function autoResizeTextarea(textarea) {
+  if (!(textarea instanceof HTMLTextAreaElement)) {
+    return;
+  }
+
+  textarea.style.height = "auto";
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
+function showToast(title, message, variant = "info") {
+  toastRegion.innerHTML = "";
+  const toast = document.createElement("div");
+  toast.className = `toast ${variant}`;
+  toast.innerHTML = `
+    <p class="toast-title">${title}</p>
+    <p class="toast-copy">${message}</p>
+  `;
+
+  toastRegion.appendChild(toast);
+
+  window.setTimeout(() => {
+    toast.classList.add("fade-out");
+    window.setTimeout(() => toast.remove(), 200);
+  }, 2600);
+}
+
+function scheduleEditToast() {
+  window.clearTimeout(editToastTimer);
+  editToastTimer = window.setTimeout(() => {
+    showToast("Patient info updated", "Structured patient details were edited.", "info");
+  }, 450);
 }
 
 function populateScenario(mode) {
@@ -292,10 +326,11 @@ function populateScenario(mode) {
 
   Object.entries(scenario.fields).forEach(([key, value]) => {
     fields[key].value = value;
+    autoResizeTextarea(fields[key]);
     fields[key].closest(".field")?.classList.remove("is-dirty");
   });
 
-  fieldStatus.textContent = "Demo case loaded";
+  showToast("Patient info updated", "Structured patient details were loaded into the chart.", "success");
   addAssistantMessage(
     "system",
     mode === "perfect"
@@ -406,7 +441,13 @@ function recalcScenario() {
   renderList(scenario.recommendations);
   renderSelected();
   setMode("results");
-  fieldStatus.textContent = hasPerfect ? "Recommendations updated" : "Fallback recommendations updated";
+  showToast(
+    "Recommendations updated",
+    hasPerfect
+      ? "The recommendation list was refreshed based on the latest patient information."
+      : "Closest available recommendations were refreshed for the patient's current needs.",
+    "success"
+  );
 }
 
 function addAssistantMessage(type, text) {
@@ -426,7 +467,7 @@ function runGenerateFlow() {
   setMode("loading");
   recommendationList.innerHTML = "";
   fallbackBanner.classList.add("hidden");
-  fieldStatus.textContent = "Parsing clinical input";
+  showToast("Analyzing patient info", "Structured fields and recommendations are being refreshed.");
   assistantStatus.textContent = "Analyzing";
 
   const scenario = getScenario();
@@ -435,6 +476,7 @@ function runGenerateFlow() {
   window.setTimeout(() => {
     Object.entries(parsedFields).forEach(([key, value]) => {
       fields[key].value = value;
+      autoResizeTextarea(fields[key]);
       fields[key].closest(".field")?.classList.remove("is-dirty");
     });
 
@@ -470,6 +512,7 @@ function explainSelection() {
 
 function askClarification() {
   fields.mobility.value = state.activeScenario === "perfect" ? "Wheelchair for distance, assisted standing" : "Supervised transfers, assisted gait";
+  autoResizeTextarea(fields.mobility);
   markDirty(fields.mobility);
   addAssistantMessage(
     "ai",
@@ -548,9 +591,11 @@ recommendationList.addEventListener("keydown", (event) => {
 
 Object.values(fields).forEach((input) => {
   input.addEventListener("input", () => {
+    autoResizeTextarea(input);
+
     if (input !== fields.notes) {
       markDirty(input);
-      fieldStatus.textContent = "Changes detected";
+      scheduleEditToast();
     }
   });
 
@@ -564,6 +609,8 @@ Object.values(fields).forEach((input) => {
 summaryInput.addEventListener("input", () => {
   generateButton.disabled = !summaryInput.value.trim();
 });
+
+Object.values(fields).forEach(autoResizeTextarea);
 
 generateButton.disabled = true;
 setMode("empty");
