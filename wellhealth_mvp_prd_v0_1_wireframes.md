@@ -31,15 +31,14 @@
 - Product name: “Rehabilitation Match Assistant”
 
 **Right:**
-- Minimal menu (optional)
-- Help icon (?)
+- No persistent top-bar actions in the current prototype
 
 ---
 
 # 4. Left Panel – Input (Form + Intake)
 
 ## 4.1 Header
-- Title: “Patient Input”
+- Title: “Patient Info”
 - Subtext (small): “Paste, upload, or dictate a discharge summary”
 
 ## 4.2 Input Block
@@ -51,17 +50,15 @@
 - On focus: blue outline
 
 ### Controls Row
-- Upload button: [Upload PDF]
-- Dictation button: 🎤 (toggle state: idle / recording)
-
-### UX Hint (inline, small text)
-“Paste discharge summary or connect EHR (coming soon)”
+- Upload button: [📋 Upload PDF]
+- Dictation button: [Dictate] with mic-dot state (idle / recording)
+- Disabled tertiary action: [Load from EHR (coming soon)]
 
 ---
 
 ## 4.3 Structured Fields (Auto-filled)
 
-Each field = label + input
+Each field = label + auto-resizing textarea
 
 - Diagnosis
 - Severity / Functional status
@@ -75,6 +72,7 @@ Each field = label + input
 - Auto-populated after parsing
 - Editable at all times
 - Changed field = subtle highlight (yellow fade)
+- Field height expands to fit multi-line clinical content
 
 ---
 
@@ -86,17 +84,23 @@ Each field = label + input
 
 ## 4.5 Primary CTA
 
-Button: **Generate suggestions**
+Button: **Analyze**
 - Full width
 - Primary color (blue)
 - Disabled until input present
+
+## 4.6 Transient Feedback
+- Toast appears at top-right on desktop and near the assistant area on mobile
+- Used for parse, field-edit, and recommendation-update feedback
+- Auto-dismiss after a short delay
 
 ---
 
 # 5. Center Panel – Explanation
 
 ## 5.1 Header
-- Title: “Recommendation reasoning”
+- Eyebrow: “Analysis”
+- Title: “Recommendation”
 - Subtext (small): “Proposed rehabilitation plan in the context of the selected institution”
 
 ---
@@ -290,6 +294,7 @@ Click CTA →
 - Empty
 - Input in progress
 - Parsing
+- Toast feedback visible
 - Clarification
 - Results: perfect match available
 - Results: no perfect match, top 3 fallback candidates shown

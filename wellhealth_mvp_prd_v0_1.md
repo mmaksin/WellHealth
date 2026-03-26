@@ -63,6 +63,7 @@ Build a lightweight, web-based MVP that:
 * Copy/paste discharge summary
 * Upload document (PDF, image)
 * Voice dictation (optional)
+* Visible but disabled "Load from EHR (coming soon)" action as a future integration placeholder
 
 ### Extracted Fields (3–7 max)
 
@@ -80,10 +81,10 @@ Build a lightweight, web-based MVP that:
 
 ### UX Hint (Future Integration – Non-functional)
 
-* Inline hint:
-  * “Paste discharge summary or connect EHR (coming soon)”
-* Tooltip:
-  * “Future versions will auto-fill patient data from hospital systems (FHIR-compatible)”
+* Disabled action in the controls row:
+  * “Load from EHR (coming soon)”
+* Meaning:
+  * Future versions will auto-fill patient data from hospital systems (FHIR-compatible)
 
 ***
 
@@ -144,12 +145,17 @@ Limitations:
 
 * Accept unstructured medical text
 * Extract key structured fields
+* Allow multi-line editing of structured clinical fields
 * Handle missing data gracefully
 
 Fallback behavior:
 
 * Ask 1–2 clarifying questions
 * Or proceed with partial data
+
+System feedback:
+
+* Show transient status feedback when patient info is loaded, analyzed, or edited
 
 ***
 
