@@ -542,8 +542,8 @@ button:disabled {
 }
 
 .match-badge.best-fit {
-  background: rgba(21, 101, 216, 0.14);
-  color: var(--primary);
+  background: rgba(25, 114, 79, 0.14);
+  color: var(--success);
 }
 
 .match-badge.closest {

@@ -51,8 +51,8 @@ const scenarios = {
         id: "seaside",
         name: "Seaside Rehabilitation Institute",
         country: "Abu Dhabi, UAE",
-        badge: "Closest available match",
-        badgeClass: "closest",
+        badge: "Close match",
+        badgeClass: "imperfect",
         fitSummary: "Good overall rehab fit with slightly less neuro-specialized intensity.",
         mismatchReason:
           "Still shown because it covers core rehab needs, but it has less neuro-specific therapy depth than the top option.",
@@ -84,7 +84,7 @@ const scenarios = {
         id: "verdant",
         name: "Verdant Recovery Resort",
         country: "Muscat, Oman",
-        badge: "Not a perfect fit",
+        badge: "Close match",
         badgeClass: "imperfect",
         fitSummary: "Supportive environment with rehab capacity, but weaker fit for intensive early stroke recovery.",
         mismatchReason:
@@ -132,8 +132,8 @@ const scenarios = {
         id: "harbor",
         name: "Harbor Integrated Rehab Clinic",
         country: "Dubai, UAE",
-        badge: "Closest available match",
-        badgeClass: "closest",
+        badge: "Close match",
+        badgeClass: "imperfect",
         fitSummary: "Safest available option with strong indoor rehab capacity and monitored sessions.",
         mismatchReason:
           "Not a perfect fit because pulmonary monitoring is adequate but not fully specialized for exertional oxygen dependence.",
@@ -167,7 +167,7 @@ const scenarios = {
         id: "cedar",
         name: "Cedar Plains Recovery Hospital",
         country: "Abu Dhabi, UAE",
-        badge: "Not a perfect fit",
+        badge: "Close match",
         badgeClass: "imperfect",
         fitSummary: "Useful for structured therapy, but transfer distances and program intensity may overtax the patient.",
         mismatchReason:
@@ -200,7 +200,7 @@ const scenarios = {
         id: "desert",
         name: "Desert Springs Wellness Resort",
         country: "Al Ain, UAE",
-        badge: "Not a perfect fit",
+        badge: "Close match",
         badgeClass: "imperfect",
         fitSummary: "Provides recovery amenities, but heat exposure rules it out as a true match.",
         mismatchReason:
@@ -318,7 +318,15 @@ function scheduleEditToast() {
   }, 450);
 }
 
+function resetRecommendations() {
+  state.selectedRecommendationId = null;
+  recommendationList.innerHTML = "";
+  fallbackBanner.classList.add("hidden");
+  setMode("empty");
+}
+
 function populateScenario(mode) {
+  resetRecommendations();
   state.activeScenario = mode;
   const scenario = getScenario();
   summaryInput.value = scenario.summary;
@@ -464,6 +472,7 @@ function runGenerateFlow() {
     return;
   }
 
+  state.selectedRecommendationId = null;
   setMode("loading");
   recommendationList.innerHTML = "";
   fallbackBanner.classList.add("hidden");
