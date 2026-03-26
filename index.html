@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WellHealth Phase 0 Prototype</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%231768dc'/%3E%3Ctext x='32' y='41' font-size='30' text-anchor='middle' fill='white' font-family='Arial, sans-serif'%3EW%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark">W</div>
+          <div>
+            <div class="eyebrow">WellHealth</div>
+            <h1>Rehabilitation Match Assistant</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="help-button" aria-label="Help">?</button>
+        </div>
+      </header>
+
+      <main class="workspace-grid">
+        <section class="panel panel-input">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Patient Input</p>
+              <h2>Patient Input</h2>
+            </div>
+            <p class="panel-subtext">Paste, upload, or dictate a discharge summary</p>
+          </div>
+
+          <div class="input-block">
+            <label class="field-label" for="summary-input">Discharge summary</label>
+            <textarea
+              id="summary-input"
+              class="summary-input"
+              placeholder="Paste discharge summary..."
+            ></textarea>
+
+            <div class="control-row">
+              <button class="secondary-button" type="button" id="upload-button">Upload PDF</button>
+              <button class="secondary-button icon-button" type="button" id="dictation-button">
+                <span class="mic-dot"></span>
+                Dictation
+              </button>
+            </div>
+
+            <p class="helper-copy">Paste discharge summary or connect EHR (coming soon)</p>
+          </div>
+
+          <div class="field-group">
+            <div class="field-group-header">
+              <h3>Structured Fields</h3>
+              <span id="field-status" class="field-status">Awaiting parsing</span>
+            </div>
+
+            <div class="field-grid">
+              <label class="field">
+                <span>Diagnosis</span>
+                <input id="field-diagnosis" type="text" />
+              </label>
+              <label class="field">
+                <span>Severity / Functional status</span>
+                <input id="field-severity" type="text" />
+              </label>
+              <label class="field">
+                <span>Contraindications</span>
+                <input id="field-contraindications" type="text" />
+              </label>
+              <label class="field">
+                <span>Comorbidities</span>
+                <input id="field-comorbidities" type="text" />
+              </label>
+              <label class="field">
+                <span>Mobility level</span>
+                <input id="field-mobility" type="text" />
+              </label>
+              <label class="field">
+                <span>Budget (optional)</span>
+                <input id="field-budget" type="text" />
+              </label>
+              <label class="field">
+                <span>Geography (optional)</span>
+                <input id="field-geography" type="text" />
+              </label>
+            </div>
+          </div>
+
+          <div class="notes-block">
+            <label class="field-label" for="field-notes">Additional notes</label>
+            <textarea id="field-notes" class="notes-input" placeholder="Additional notes..."></textarea>
+          </div>
+
+          <div class="cta-row">
+            <button class="primary-button" id="generate-button" type="button">Analyze</button>
+          </div>
+        </section>
+
+        <section class="panel panel-center">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Reasoning</p>
+              <h2>Recommendation</h2>
+            </div>
+            <p class="panel-subtext">
+              Proposed rehabilitation plan in the context of the selected institution
+            </p>
+          </div>
+
+          <div id="center-empty" class="center-state center-empty">
+            <p>Recommendation and rehabilitation plan details will appear here.</p>
+          </div>
+
+          <div id="center-loading" class="center-state center-loading hidden" aria-live="polite">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-line short"></div>
+            <div class="skeleton skeleton-card"></div>
+            <p>Analyzing clinical input...</p>
+          </div>
+
+          <div id="center-content" class="center-state center-content hidden">
+            <div class="selected-venue-card">
+              <div>
+                <p class="mini-label">Selected institution</p>
+                <h3 id="selected-name"></h3>
+              </div>
+              <span id="selected-badge" class="match-badge"></span>
+            </div>
+
+            <section id="warning-box" class="warning-box">
+              <p class="mini-label">Risks / warnings</p>
+              <p id="reason-warnings"></p>
+            </section>
+
+            <div class="pros-cons-grid">
+              <section class="reason-section surface positive">
+                <h3>Pros</h3>
+                <ul id="reason-pros"></ul>
+              </section>
+              <section class="reason-section surface neutral">
+                <h3>Cons / limitations</h3>
+                <ul id="reason-cons"></ul>
+              </section>
+            </div>
+
+            <section class="reason-section">
+              <h3>Why this fits</h3>
+              <p id="reason-why"></p>
+            </section>
+
+            <section class="reason-section">
+              <h3>Proposed rehabilitation plan</h3>
+              <p id="reason-plan"></p>
+            </section>
+
+            <section class="reason-section">
+              <h3>Treatment match</h3>
+              <ul id="reason-treatment"></ul>
+            </section>
+
+            <section class="reason-section">
+              <h3>Expected outcomes</h3>
+              <ul id="reason-outcomes"></ul>
+            </section>
+          </div>
+        </section>
+
+        <section class="panel panel-right">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Results</p>
+              <h2>Suggested options</h2>
+            </div>
+            <p class="panel-subtext">Three recommendation cards with clear fit quality and tradeoffs</p>
+          </div>
+
+          <div id="fallback-banner" class="fallback-banner hidden" role="status">
+            No perfect matches found. Showing the top 3 closest available options.
+          </div>
+
+          <div id="recommendation-loading" class="recommendation-loading hidden">
+            <div class="recommendation-skeleton"></div>
+            <div class="recommendation-skeleton"></div>
+            <div class="recommendation-skeleton"></div>
+          </div>
+
+          <div id="recommendation-list" class="recommendation-list"></div>
+        </section>
+      </main>
+
+      <aside class="assistant assistant-collapsed" id="assistant">
+        <button class="assistant-trigger" id="assistant-toggle" type="button" aria-label="Open AI assistant">
+          <span aria-hidden="true">💬</span>
+        </button>
+
+        <div class="assistant-panel">
+          <div class="assistant-header">
+            <div>
+              <p class="eyebrow">Assistant</p>
+              <h3>Clinical helper</h3>
+            </div>
+            <span id="assistant-status" class="assistant-status">Ready</span>
+          </div>
+
+          <div class="assistant-messages" id="assistant-messages"></div>
+
+          <div class="assistant-actions">
+            <button type="button" class="secondary-button small" id="assistant-clarify">
+              Ask clarification
+            </button>
+            <button type="button" class="secondary-button small" id="assistant-explain">
+              Explain selection
+            </button>
+          </div>
+
+          <div class="assistant-composer">
+            <input id="assistant-input" type="text" placeholder="Ask about the recommendation..." />
+            <button type="button" class="primary-button small" id="assistant-send">Send</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
